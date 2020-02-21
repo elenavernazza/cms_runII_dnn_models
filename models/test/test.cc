@@ -307,11 +307,10 @@ bool run_test_loop(std::string fname, InfWrapper wrapper) {
     std::map<unsigned long, std::string> id2name = build_id_map(in_file);
     std::cout << " Extracted\n";
     std::vector<std::string> names;
-    int sample, region, jet_cat, cut;
-    unsigned long long int evt;
-    bool scale, syst_unc;
+    int sample, region, jet_cat, cut, n_vbf, class_id;
+    unsigned long long int strat_key, evt;
+    bool scale, syst_unc, svfit_conv, hh_kinfit_conv;
     std::vector<unsigned long> ids;
-    int class_id;
 
     // HL feats
     TTreeReaderValue<float> rv_kinfit_mass(reader, "m_ttbb_kinfit");
@@ -458,9 +457,20 @@ bool run_test_loop(std::string fname, InfWrapper wrapper) {
         vbf_1.SetCoordinates(pep_vbf_1.Px(), pep_vbf_1.Py(), pep_vbf_1.Pz(), pep_vbf_1.M());
         vbf_2.SetCoordinates(pep_vbf_2.Px(), pep_vbf_2.Py(), pep_vbf_2.Pz(), pep_vbf_2.M());
 
-        feat_vals = evt_proc.process_as_vec(b_1, b_2, l_1, l_2, met, svfit, vbf_1, vbf_2, kinfit_mass, kinfit_chi2, mt2, mt_tot, p_zetavisible, p_zeta, top_1_mass,
-                                            top_2_mass, l_1_mt, l_2_mt, is_boosted, b_1_csv, b_2_csv, b_1_deepcsv, b_2_deepcsv, e_channel, e_year, res_mass, spin,
-                                            klambda);
+        // VBF
+        n_vbf = 0;
+        if (jet_cat == 4) {
+            if (*rv_vbf_1_mass != std::numeric_limits<float>::lowest()) n_vbf++;
+            if (*rv_vbf_2_mass != std::numeric_limits<float>::lowest()) n_vbf++;
+        }
+
+        // Convergence
+        svfit_conv     = *rv_svfit_mass > 0;
+        hh_kinfit_conv = *kinfit_chi2   > 0;
+
+        feat_vals = evt_proc.process_as_vec(b_1, b_2, l_1, l_2, met, svfit, vbf_1, vbf_2, kinfit_mass, kinfit_chi2, mt2, mt_tot, p_zetavisible, p_zeta,
+                                            top_1_mass, top_2_mass, l_1_mt, l_2_mt, is_boosted, b_1_csv, b_2_csv, b_1_deepcsv, b_2_deepcsv, e_channel, e_year,
+                                            res_mass, spin, klambda, n_vbf, svfit_conv, hh_kinfit_conv);
         pred = wrapper.predict(feat_vals, evt);
         std::cout << "Event " << c_event << " class " << class_id << " prediction " << pred << "\n";
     }
