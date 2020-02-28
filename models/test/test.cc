@@ -228,18 +228,6 @@ void extract_flags(const std::vector<std::string>& name, int& sample, int& regio
 }
 
 
-unsigned long long int get_strat_key(const int& sample, const int& jet_cat, const int& region, const int& spin, const int& syst_unc,
-                                                  const int& cut) {
-    unsigned long long int strat_key = std::pow(2,  std::abs(sample))*
-                                       std::pow(3,  jet_cat)*
-                                       std::pow(5,  region)*
-                                       std::pow(7,  spin)*
-                                       std::pow(11, cut)*
-                                       std::pow(13, syst_unc);
-    if (strat_key == 0) throw std::overflow_error("Strat key overflow\n");    
-    return strat_key;
-}
-
 std::map<unsigned long, std::string> build_id_map(TFile* in_file) {
     TTreeReader aux_reader("aux", in_file);
     TTreeReaderValue<std::vector<unsigned long>> rv_aux_id(aux_reader, "dataIds");
@@ -308,7 +296,7 @@ bool run_test_loop(std::string fname, InfWrapper wrapper) {
     std::cout << " Extracted\n";
     std::vector<std::string> names;
     int sample, region, jet_cat, cut, n_vbf, class_id;
-    unsigned long long int strat_key, evt;
+    unsigned long long int evt;
     bool scale, syst_unc, svfit_conv, hh_kinfit_conv;
     std::vector<unsigned long> ids;
 
