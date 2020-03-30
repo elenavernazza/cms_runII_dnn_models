@@ -28,7 +28,7 @@
 const double E_MASS  = 0.0005109989; //GeV
 const double MU_MASS = 0.1056583715; //GeV
 
-std::string model_dir = "../../src/cms_runII_dnn_models/models/nonres_gluglu/2020-02-17-0/ensemble";
+std::string model_dir = "../../src/cms_runII_dnn_models/models/nonres_gluglu/2020-03-11-0/ensemble";
 std::string data_dir = "/eos/home-k/kandroso/cms-it-hh-bbtautau/anaTuples/2020-02-14";
 
 using LorentzVectorPEP = ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiM4D<float>>;
