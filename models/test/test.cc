@@ -248,35 +248,32 @@ bool run_test_loop(std::string fname, InfWrapper wrapper) {
     TFile* in_file = TFile::Open(fname.c_str());
     TTreeReader reader("muTau", in_file);
 
-    std::vector<std::string> requested{"vbf_1_pT",
-                                       "l_2_pT",
-                                       "b_1_pT",
-                                       "dR_b1_b2_x_h_bb_pT",
-                                       "dphi_httvis_met",
-                                       "hh_kinfit_m",
-                                       "sv_mass",
-                                       "diH_mass_X",
-                                       "h_bb_mass",
-                                       "dphi_l1_met",
-                                       "dR_l1_l2_x_h_tt_met_pT",
-                                       "dR_b1_b2_boosted_hbb",
-                                       "costheta_l1_htt",
-                                       "l_1_pT",
-                                       "dphi_hbb_sv",
-                                       "costheta_met_hbb",
-                                       "costheta_htt_met_hh_met",
-                                       "vbf_2_pT",
-                                       "deta_l1_l2",
-                                       "costheta_met_htt",
-                                       "dphi_vbf1_vbf2",
-                                       "dR_l1_l2_boosted_htt_met",
-                                       "vbf_1_E",
-                                       "hh_pT",
-                                       "boosted",
-                                       "channel",
-                                       "jet_1_quality",
-                                       "jet_2_quality",
-                                       "year"};
+    std::vector<std::string> requested{
+        "dR_hbb_sv",
+        "hh_kinfit_m",
+        "sv_mass",
+        "b_1_pT",
+        "dR_l1_l2_x_sv_pT",
+        "h_bb_mass",
+        "dphi_sv_met",
+        "dR_l1_l2_boosted_htt_met",
+        "dphi_hbb_sv",
+        "deta_b1_b2",
+        "costheta_l2_htt",
+        "hh_kinfit_chi2",
+        "l_1_pT",
+        "dphi_l1_met",
+        "costheta_htt_hh_met",
+        "dR_hbb_httmet",
+        "top_1_mass",
+        "costheta_b1_hbb",
+        "deta_hbb_httmet",
+        "costheta_met_htt",
+        "boosted",
+        "channel",
+        "jet_1_quality",
+        "jet_2_quality",
+        "year"};
 
     EvtProc evt_proc(false, requested, true);
 
@@ -471,7 +468,7 @@ bool run_test_loop(std::string fname, InfWrapper wrapper) {
 
 int main(int argc, char *argv[]) {
     std::cout << "Instantiating wrapper\n";
-    InfWrapper wrapper(model_dir, 1, false);
+    InfWrapper wrapper(model_dir, 1, true);
     std::cout << "Wrapper instantiated\n";
 
     std::cout << "\nBeginning test loop for ensemble\n";
