@@ -457,9 +457,10 @@ bool run_test_loop(std::string fname, InfWrapper wrapper, int n) {
                                             top_1_mass, top_2_mass, l_1_mt, l_2_mt, is_boosted, b_1_csv, b_2_csv, b_1_deepcsv, b_2_deepcsv, e_channel, e_year,
                                             res_mass, spin, klambda, n_vbf, svfit_conv, hh_kinfit_conv);
 
-        for (unsigned int i=0; i < requested.size(); i++) std::cout << requested[i] << " : " << feat_vals[i] << "\n";
+        std::cout << "Input features:\n";
+        for (unsigned int i=0; i < requested.size(); i++) std::cout << requested[i] << "\t:\t" << feat_vals[i] << "\n";
         pred = wrapper.predict(feat_vals, evt);
-        std::cout << "Event " << c_event << " class " << class_id << " prediction " << pred << "\n";
+        std::cout << "\nEvent " << c_event << " class " << class_id << " prediction " << pred << "\n";
 
         if (c_event >= n && n > 0) break;
     }
