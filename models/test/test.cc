@@ -243,7 +243,7 @@ std::map<unsigned long, std::string> build_id_map(TFile* in_file) {
     return id2name;
 }
 
-bool run_test_loop(std::string fname, InfWrapper wrapper) {
+bool run_test_loop(std::string fname, InfWrapper wrapper, int n) {
     std::cout << "Reading from file: " << fname << "\n";
     TFile* in_file = TFile::Open(fname.c_str());
     TTreeReader reader("muTau", in_file);
@@ -456,8 +456,12 @@ bool run_test_loop(std::string fname, InfWrapper wrapper) {
         feat_vals = evt_proc.process_as_vec(b_1, b_2, l_1, l_2, met, svfit, vbf_1, vbf_2, kinfit_mass, kinfit_chi2, mt2, mt_tot, p_zetavisible, p_zeta,
                                             top_1_mass, top_2_mass, l_1_mt, l_2_mt, is_boosted, b_1_csv, b_2_csv, b_1_deepcsv, b_2_deepcsv, e_channel, e_year,
                                             res_mass, spin, klambda, n_vbf, svfit_conv, hh_kinfit_conv);
+                                            
+        for (int i=0; i < requested.size(); i++) std::cout << requested[i] << " : " << feat_vals << "\n";
         pred = wrapper.predict(feat_vals, evt);
         std::cout << "Event " << c_event << " class " << class_id << " prediction " << pred << "\n";
+
+        if (c_event >= n && n > 0) break;
     }
 
     std::cout << "Loop complete.\n";
@@ -465,14 +469,50 @@ bool run_test_loop(std::string fname, InfWrapper wrapper) {
     return true;
 }
 
+void show_help() {
+    /* Show help for input arguments */
+
+    std::cout << "-n : number of events to run, default 1, set negative to run all events in file\n";
+}
+
+std::map<std::string, std::string> get_options(int argc, char* argv[]) {
+    /*Interpret input arguments*/
+
+    std::map<std::string, std::string> options;
+    options.insert(std::make_pair("-n", "1")); // number of events
+
+    if (argc >= 2) { //Check if help was requested
+        std::string option(argv[1]);
+        if (option == "-h" || option == "--help") {
+            show_help();
+            options.clear();
+            return options;
+        }
+    }
+
+    for (int i = 1; i < argc; i = i+2) {
+        std::string option(argv[i]);
+        std::string argument(argv[i+1]);
+        if (option == "-h" || option == "--help" || argument == "-h" || argument == "--help") { // Check if help was requested
+            show_help();
+            options.clear();
+            return options;
+        }
+        options[option] = argument;
+    }
+    return options;
+}
 
 int main(int argc, char *argv[]) {
+    std::map<std::string, std::string> options = get_options(argc, argv); // Parse arguments
+    if (options.size() == 0) return 1;
+
     std::cout << "Instantiating wrapper\n";
     InfWrapper wrapper(model_dir, 1, true);
     std::cout << "Wrapper instantiated\n";
 
     std::cout << "\nBeginning test loop for ensemble\n";
-    assert(run_test_loop(data_dir+"/2018_muTau.root", wrapper));
+    assert(run_test_loop(data_dir+"/2018_muTau.root", wrapper), std::stoi(options["-n"]));
     std::cout << "\nAll tests completed sucessfully\n";
     return 0;
 }
