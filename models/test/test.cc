@@ -243,21 +243,27 @@ std::map<unsigned long, std::string> build_id_map(TFile* in_file) {
     return id2name;
 }
 
-std::vector<std::string> get_requested(std::string file_name) {
-    std::ifstream infile(file_name);
+
+std::vector<std::string> get_requested(std::string feat_file) {
+    std::ifstream infile(feat_file);
+    std::cout << "Reading features from file: " << feat_file << "\nFeatures:";
     std::string line;
     std::vector<std::string> requested;
-    while (std::getline(infile, line)) requested.push_back(line);
+    while (std::getline(infile, line)) {
+        std::cout << feat_file << " ";
+        requested.push_back(line);
+    }
+    std::cout << "\n";
     infile.close();
     return requested;
 }
 
-bool run_test_loop(std::string fname, InfWrapper wrapper, int n, std::string feat_file) {
-    std::cout << "Reading from file: " << fname << "\n";
+
+bool run_test_loop(std::string fname, InfWrapper wrapper, const& int n, const& std::string feat_file) {
+    std::cout << "Reading data from file: " << fname << "\n";
     TFile* in_file = TFile::Open(fname.c_str());
     TTreeReader reader("muTau", in_file);
     
-
     std::vector<std::string> requested = get_requested(feat_file);
 
     EvtProc evt_proc(false, requested, true);
