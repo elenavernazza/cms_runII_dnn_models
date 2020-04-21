@@ -484,7 +484,7 @@ std::map<std::string, std::string> get_options(int argc, char* argv[]) {
     std::map<std::string, std::string> options;
     options.insert(std::make_pair("-n", "1")); // number of events
     options.insert(std::make_pair("-m", "2020-03-11-0")); // moddel version
-    options.insert(std::make_pair("-m", "2020-02-14")); // moddel version
+    options.insert(std::make_pair("-d", "2020-02-14")); // moddel version
 
     if (argc >= 2) { //Check if help was requested
         std::string option(argv[1]);
