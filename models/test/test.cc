@@ -28,8 +28,8 @@
 const double E_MASS  = 0.0005109989; //GeV
 const double MU_MASS = 0.1056583715; //GeV
 
-std::string model_dir = "../../src/cms_runII_dnn_models/models/nonres_gluglu/2020-03-11-0/ensemble";
-std::string data_dir = "/eos/home-k/kandroso/cms-it-hh-bbtautau/anaTuples/2020-02-14";
+std::string model_dir = "../../src/cms_runII_dnn_models/models/nonres_gluglu/";
+std::string data_dir = "/eos/home-k/kandroso/cms-it-hh-bbtautau/anaTuples/";
 
 using LorentzVectorPEP = ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiM4D<float>>;
 using LorentzVector    = ROOT::Math::LorentzVector<ROOT::Math::PxPyPzM4D<float>>;
@@ -474,6 +474,8 @@ void show_help() {
     /* Show help for input arguments */
 
     std::cout << "-n : number of events to run, default 1, set negative to run all events in file\n";
+    std::cout << "-m : model version to use, default 2020-03-11-0\n";
+    std::cout << "-d : data version to use, default 2020-02-14\n";
 }
 
 std::map<std::string, std::string> get_options(int argc, char* argv[]) {
@@ -481,6 +483,8 @@ std::map<std::string, std::string> get_options(int argc, char* argv[]) {
 
     std::map<std::string, std::string> options;
     options.insert(std::make_pair("-n", "1")); // number of events
+    options.insert(std::make_pair("-m", "2020-03-11-0")); // moddel version
+    options.insert(std::make_pair("-m", "2020-02-14")); // moddel version
 
     if (argc >= 2) { //Check if help was requested
         std::string option(argv[1]);
@@ -509,11 +513,11 @@ int main(int argc, char *argv[]) {
     if (options.size() == 0) return 1;
 
     std::cout << "Instantiating wrapper\n";
-    InfWrapper wrapper(model_dir, 1, true);
+    InfWrapper wrapper(model_dir+options["-m"]+"/ensemble", 1, true);
     std::cout << "Wrapper instantiated\n";
 
     std::cout << "\nBeginning test loop for ensemble\n";
-    assert(run_test_loop(data_dir+"/2018_muTau.root", wrapper, std::stoi(options["-n"])));
+    assert(run_test_loop(data_dir+options["-d"]+"/2018_muTau.root", wrapper, std::stoi(options["-n"])));
     std::cout << "\nAll tests completed sucessfully\n";
     return 0;
 }
