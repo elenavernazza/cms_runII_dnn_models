@@ -259,7 +259,7 @@ std::vector<std::string> get_requested(std::string feat_file) {
 }
 
 
-bool run_test_loop(std::string fname, InfWrapper wrapper, const& int n, const& std::string feat_file) {
+bool run_test_loop(std::string fname, InfWrapper wrapper, const int& n, const std::string& feat_file) {
     std::cout << "Reading data from file: " << fname << "\n";
     TFile* in_file = TFile::Open(fname.c_str());
     TTreeReader reader("muTau", in_file);
