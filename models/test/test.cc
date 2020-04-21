@@ -508,7 +508,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Wrapper instantiated\n";
 
     std::cout << "\nBeginning test loop for ensemble\n";
-    assert(run_test_loop(data_dir+options["-d"]+"/2018_muTau.root", wrapper, std::stoi(options["-n"]), data_dir+options["-m"]+"/features.txt"));
+    assert(run_test_loop(data_dir+options["-d"]+"/2018_muTau.root", wrapper, std::stoi(options["-n"]), model_dir+options["-m"]+"/features.txt"));
     std::cout << "\nAll tests completed sucessfully\n";
     return 0;
 }
