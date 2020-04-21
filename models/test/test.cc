@@ -456,7 +456,7 @@ bool run_test_loop(std::string fname, InfWrapper wrapper, int n) {
         feat_vals = evt_proc.process_as_vec(b_1, b_2, l_1, l_2, met, svfit, vbf_1, vbf_2, kinfit_mass, kinfit_chi2, mt2, mt_tot, p_zetavisible, p_zeta,
                                             top_1_mass, top_2_mass, l_1_mt, l_2_mt, is_boosted, b_1_csv, b_2_csv, b_1_deepcsv, b_2_deepcsv, e_channel, e_year,
                                             res_mass, spin, klambda, n_vbf, svfit_conv, hh_kinfit_conv);
-                                            
+
         for (int i=0; i < requested.size(); i++) std::cout << requested[i] << " : " << feat_vals << "\n";
         pred = wrapper.predict(feat_vals, evt);
         std::cout << "Event " << c_event << " class " << class_id << " prediction " << pred << "\n";
@@ -512,7 +512,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Wrapper instantiated\n";
 
     std::cout << "\nBeginning test loop for ensemble\n";
-    assert(run_test_loop(data_dir+"/2018_muTau.root", wrapper), std::stoi(options["-n"]));
+    assert(run_test_loop(data_dir+"/2018_muTau.root", wrapper, std::stoi(options["-n"])));
     std::cout << "\nAll tests completed sucessfully\n";
     return 0;
 }
