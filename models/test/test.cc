@@ -250,7 +250,7 @@ std::vector<std::string> get_requested(std::string feat_file) {
     std::string line;
     std::vector<std::string> requested;
     while (std::getline(infile, line)) {
-        std::cout << feat_file << " ";
+        std::cout << line << " ";
         requested.push_back(line);
     }
     std::cout << "\n";
