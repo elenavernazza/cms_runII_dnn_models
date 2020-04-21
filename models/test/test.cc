@@ -243,37 +243,22 @@ std::map<unsigned long, std::string> build_id_map(TFile* in_file) {
     return id2name;
 }
 
-bool run_test_loop(std::string fname, InfWrapper wrapper, int n) {
+std::vector<std::string> get_requested(std::string file_name) {
+    std::ifstream infile(file_name);
+    std::string line;
+    std::vector<std::string> requested;
+    while (std::getline(infile, line)) requested.push_back(line);
+    infile.close();
+    return requested;
+}
+
+bool run_test_loop(std::string fname, InfWrapper wrapper, int n, std::string feat_file) {
     std::cout << "Reading from file: " << fname << "\n";
     TFile* in_file = TFile::Open(fname.c_str());
     TTreeReader reader("muTau", in_file);
+    
 
-    std::vector<std::string> requested{
-        "dR_hbb_sv",
-        "hh_kinfit_m",
-        "sv_mass",
-        "b_1_pT",
-        "dR_l1_l2_x_sv_pT",
-        "h_bb_mass",
-        "dphi_sv_met",
-        "dR_l1_l2_boosted_htt_met",
-        "dphi_hbb_sv",
-        "deta_b1_b2",
-        "costheta_l2_htt",
-        "hh_kinfit_chi2",
-        "l_1_pT",
-        "dphi_l1_met",
-        "costheta_htt_hh_met",
-        "dR_hbb_httmet",
-        "top_1_mass",
-        "costheta_b1_hbb",
-        "deta_hbb_httmet",
-        "costheta_met_htt",
-        "boosted",
-        "channel",
-        "jet_1_quality",
-        "jet_2_quality",
-        "year"};
+    std::vector<std::string> requested = get_requested(feat_file);
 
     EvtProc evt_proc(false, requested, true);
 
@@ -517,7 +502,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Wrapper instantiated\n";
 
     std::cout << "\nBeginning test loop for ensemble\n";
-    assert(run_test_loop(data_dir+options["-d"]+"/2018_muTau.root", wrapper, std::stoi(options["-n"])));
+    assert(run_test_loop(data_dir+options["-d"]+"/2018_muTau.root", wrapper, std::stoi(options["-n"]), data_dir+options["-d"]+"/features.txt"));
     std::cout << "\nAll tests completed sucessfully\n";
     return 0;
 }
