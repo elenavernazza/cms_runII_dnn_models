@@ -57,8 +57,9 @@ int jet_cat_lookup(const std::string& jet_cat) {
     if (jet_cat == "2j0bR_noVBF")   return 1;
     if (jet_cat == "2j1bR_noVBF")   return 2;
     if (jet_cat == "2j2b+R_noVBF")  return 3;
-    if (jet_cat == "4j1b+_VBF")     return 4;
-    if (jet_cat == "2j2Lb+B_noVBF") return 5;
+    if (jet_cat == "2j2Lb+B_noVBF") return 4;
+    if (jet_cat == "2j1b+_VBF")     return 5;
+    if (jet_cat == "2j1b+_VBFL")    return 6;
     throw std::invalid_argument("Unrecognised jet category: " + jet_cat);
     return -1;
 }
@@ -300,11 +301,9 @@ bool run_test_loop(std::string fname, InfWrapper wrapper, const int& n, const st
     float kinfit_mass, kinfit_chi2, mt2, mt_tot, top_1_mass, top_2_mass, p_zetavisible, p_zeta;
 
     // Tagging
-    TTreeReaderValue<float> rv_b_1_csv(reader, "csv_b1");
-    TTreeReaderValue<float> rv_b_2_csv(reader, "csv_b2");
-    TTreeReaderValue<float> rv_b_1_deepcsv(reader, "deepcsv_b1");
-    TTreeReaderValue<float> rv_b_2_deepcsv(reader, "deepcsv_b2");
-    float b_1_csv, b_2_csv, b_1_deepcsv, b_2_deepcsv;
+    TTreeReaderValue<float> rv_b_1_csv(reader, "b1_DeepFlavour");
+    TTreeReaderValue<float> rv_b_2_csv(reader, "b2_DeepFlavour");
+    float b_1_csv, b_2_csv;
     bool is_boosted;
 
     // SVFit feats
@@ -404,8 +403,6 @@ bool run_test_loop(std::string fname, InfWrapper wrapper, const int& n, const st
         // Load tagging
         b_1_csv     = *rv_b_1_csv;
         b_2_csv     = *rv_b_2_csv;
-        b_1_deepcsv = *rv_b_1_deepcsv;
-        b_2_deepcsv = *rv_b_2_deepcsv;
 
         // Load vectors
         pep_svfit.SetCoordinates(*rv_svfit_pT, *rv_svfit_eta, *rv_svfit_phi, *rv_svfit_mass);
@@ -445,7 +442,7 @@ bool run_test_loop(std::string fname, InfWrapper wrapper, const int& n, const st
         hh_kinfit_conv = kinfit_chi2    > 0;
 
         feat_vals = evt_proc.process_as_vec(b_1, b_2, l_1, l_2, met, svfit, vbf_1, vbf_2, kinfit_mass, kinfit_chi2, mt2, mt_tot, p_zetavisible, p_zeta,
-                                            top_1_mass, top_2_mass, l_1_mt, l_2_mt, is_boosted, b_1_csv, b_2_csv, b_1_deepcsv, b_2_deepcsv, e_channel, e_year,
+                                            top_1_mass, top_2_mass, l_1_mt, l_2_mt, is_boosted, b_1_csv, b_2_csv, e_channel, e_year,
                                             res_mass, spin, klambda, n_vbf, svfit_conv, hh_kinfit_conv);
 
         std::cout << "Input features:\n";
