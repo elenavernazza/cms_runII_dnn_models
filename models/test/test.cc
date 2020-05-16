@@ -202,15 +202,6 @@ void extract_flags(const std::vector<std::string>& name, int& sample, int& regio
                 tmp = jet_cat_lookup(val);
                 if (tmp > jet_cat) jet_cat = tmp;
                 is_boosted = (jet_cat == 5);
-            } else if (i == 1) {
-                tmp = cut_lookup(val);
-                if (tmp > cut) cut = tmp;
-            } else if (i == 2 && n == 0) {
-                region = region_lookup(val);
-            } else if (i == 3 && n == 0) {
-                syst_unc = (val == "None");
-            } else if (i == 4 && n == 0) {
-                scale = (val == "Central");
             } else if (i == 5 && n == 0) {
                 sample_lookup(val, sample, spin, klambda, res_mass);
             }
@@ -465,7 +456,7 @@ bool run_test_loop(std::string fname, InfWrapper wrapper, const int& n, const st
         feat_vals = evt_proc.process_as_vec(b_1, b_2, l_1, l_2, met, svfit, vbf_1, vbf_2, kinfit_mass, kinfit_chi2, mt2, mt_tot, p_zetavisible, p_zeta,
                                             top_1_mass, top_2_mass, l_1_mt, l_2_mt, is_boosted, b_1_csv, b_2_csv, e_channel, e_year,
                                             res_mass, spin, klambda, n_vbf, svfit_conv, hh_kinfit_conv, b_1_hhbtag, b_2_hhbtag, vbf_1_hhbtag, vbf_2_hhbtag,
-                                            b_1_cvsl, b_2_cvsl, vbf_1_cvsl, vbf_2_cvsl, b_1_cvsb, b_2_cvsb, vbf_1_cvsb, vbf_2_cvsb, cv, c2v, c3);
+                                            b_1_cvsl, b_2_cvsl, vbf_1_cvsl, vbf_2_cvsl, b_1_cvsb, b_2_cvsb, vbf_1_cvsb, vbf_2_cvsb, 0, 0, 0);
 
         std::cout << "Input features:\n";
         for (unsigned int i=0; i < requested.size(); i++) std::cout << requested[i] << "\t:\t" << feat_vals[i] << "\n";
