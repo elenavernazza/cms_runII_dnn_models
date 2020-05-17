@@ -43,22 +43,15 @@ std::vector<std::string>get_evt_names(const std::map<unsigned long, std::string>
     return names;
 }
 
-int cut_lookup(const std::string& cut) {
-    if (cut == "NoCuts") return 0;
-    if (cut == "mhVis")  return 1;
-    if (cut == "mh")     return 2;
-    throw std::invalid_argument("Unrecognised cut category: " + cut);
-    return -1;
-}
-
 
 int jet_cat_lookup(const std::string& jet_cat) {
     if (jet_cat == "2j")            return 0;
     if (jet_cat == "2j0bR_noVBF")   return 1;
     if (jet_cat == "2j1bR_noVBF")   return 2;
     if (jet_cat == "2j2b+R_noVBF")  return 3;
-    if (jet_cat == "4j1b+_VBF")     return 4;
-    if (jet_cat == "2j2Lb+B_noVBF") return 5;
+    if (jet_cat == "2j2Lb+B_noVBF") return 4;
+    if (jet_cat == "2j1b+_VBFL")    return 5;
+    if (jet_cat == "2j1b+_VBF")     return 6;
     throw std::invalid_argument("Unrecognised jet category: " + jet_cat);
     return -1;
 }
@@ -209,15 +202,6 @@ void extract_flags(const std::vector<std::string>& name, int& sample, int& regio
                 tmp = jet_cat_lookup(val);
                 if (tmp > jet_cat) jet_cat = tmp;
                 is_boosted = (jet_cat == 5);
-            } else if (i == 1) {
-                tmp = cut_lookup(val);
-                if (tmp > cut) cut = tmp;
-            } else if (i == 2 && n == 0) {
-                region = region_lookup(val);
-            } else if (i == 3 && n == 0) {
-                syst_unc = (val == "None");
-            } else if (i == 4 && n == 0) {
-                scale = (val == "Central");
             } else if (i == 5 && n == 0) {
                 sample_lookup(val, sample, spin, klambda, res_mass);
             }
@@ -289,87 +273,94 @@ bool run_test_loop(std::string fname, InfWrapper wrapper, const int& n, const st
     std::vector<unsigned long> ids;
 
     // HL feats
-    TTreeReaderValue<float> rv_kinfit_mass(reader, "m_ttbb_kinfit");
-    TTreeReaderValue<float> rv_kinfit_chi2(reader, "chi2_kinFit");
+    TTreeReaderValue<float> rv_kinfit_mass(reader, "kinFit_m");
+    TTreeReaderValue<float> rv_kinfit_chi2(reader, "kinFit_chi2");
     TTreeReaderValue<float> rv_mt2(reader, "MT2");
-    TTreeReaderValue<float> rv_mt_tot(reader, "mt_tot");
-    TTreeReaderValue<float> rv_top_1_mass(reader, "mass_top1");
-    TTreeReaderValue<float> rv_top_2_mass(reader, "mass_top2");
-    TTreeReaderValue<float> rv_p_zetavisible(reader, "p_zetavisible");
-    TTreeReaderValue<float> rv_p_zeta(reader, "p_zeta");
-    float kinfit_mass, kinfit_chi2, mt2, mt_tot, top_1_mass, top_2_mass, p_zetavisible, p_zeta;
+    float kinfit_mass, kinfit_chi2, mt2;
 
     // Tagging
-    TTreeReaderValue<float> rv_b_1_csv(reader, "csv_b1");
-    TTreeReaderValue<float> rv_b_2_csv(reader, "csv_b2");
-    TTreeReaderValue<float> rv_b_1_deepcsv(reader, "deepcsv_b1");
-    TTreeReaderValue<float> rv_b_2_deepcsv(reader, "deepcsv_b2");
-    float b_1_csv, b_2_csv, b_1_deepcsv, b_2_deepcsv;
+    TTreeReaderValue<float> rv_b_1_csv(reader, "b1_DeepFlavour");
+    TTreeReaderValue<float> rv_b_2_csv(reader, "b2_DeepFlavour");
+    float b_1_csv, b_2_csv;
     bool is_boosted;
 
     // SVFit feats
-    TTreeReaderValue<float> rv_svfit_pT(reader, "pt_sv");
-    TTreeReaderValue<float> rv_svfit_eta(reader, "eta_sv");
-    TTreeReaderValue<float> rv_svfit_phi(reader, "phi_sv");
-    TTreeReaderValue<float> rv_svfit_mass(reader, "m_sv");
+    TTreeReaderValue<float> rv_svfit_pT(reader, "SVfit_pt");
+    TTreeReaderValue<float> rv_svfit_eta(reader, "SVfit_eta");
+    TTreeReaderValue<float> rv_svfit_phi(reader, "SVfit_phi");
+    TTreeReaderValue<float> rv_svfit_mass(reader, "SVfit_m");
     LorentzVectorPEP pep_svfit;
     LorentzVector svfit;
 
     // l1 feats
-    TTreeReaderValue<float> rv_l_1_pT(reader, "pt_1");
-    TTreeReaderValue<float> rv_l_1_eta(reader, "eta_1");
-    TTreeReaderValue<float> rv_l_1_phi(reader, "phi_1");
-    TTreeReaderValue<float> rv_l_1_mass(reader, "m_1");
-    TTreeReaderValue<float> rv_l_1_mt(reader, "mt_1");
-    float l_1_mass, l_1_mt;
+    TTreeReaderValue<float> rv_l_1_pT(reader, "tau1_pt");
+    TTreeReaderValue<float> rv_l_1_eta(reader, "tau1_eta");
+    TTreeReaderValue<float> rv_l_1_phi(reader, "tau1_phi");
+    TTreeReaderValue<float> rv_l_1_mass(reader, "tau1_m");
+    float l_1_mass;
     LorentzVectorPEP pep_l_1;
     LorentzVector l_1;
 
+
     // l2 feats
-    TTreeReaderValue<float> rv_l_2_pT(reader, "pt_2");
-    TTreeReaderValue<float> rv_l_2_eta(reader, "eta_2");
-    TTreeReaderValue<float> rv_l_2_phi(reader, "phi_2");
-    TTreeReaderValue<float> rv_l_2_mass(reader, "m_2");
-    TTreeReaderValue<float> rv_l_2_mt(reader, "mt_2");
-    float l_2_mt;
+    TTreeReaderValue<float> rv_l_2_pT(reader, "tau2_pt");
+    TTreeReaderValue<float> rv_l_2_eta(reader, "tau2_eta");
+    TTreeReaderValue<float> rv_l_2_phi(reader, "tau2_phi");
+    TTreeReaderValue<float> rv_l_2_mass(reader, "tau2_m");
     LorentzVectorPEP pep_l_2;\
     LorentzVector l_2;
 
     // MET feats
-    TTreeReaderValue<float> rv_met_pT(reader, "pt_MET");
-    TTreeReaderValue<float> rv_met_phi(reader, "phiMET");
+    TTreeReaderValue<float> rv_met_pT(reader, "MET_pt");
+    TTreeReaderValue<float> rv_met_phi(reader, "MET_phi");
     LorentzVectorPEP pep_met;
     LorentzVector met;
 
     // b1 feats
-    TTreeReaderValue<float> rv_b_1_pT(reader, "pt_b1");
-    TTreeReaderValue<float> rv_b_1_eta(reader, "eta_b1");
-    TTreeReaderValue<float> rv_b_1_phi(reader, "phi_b1");
-    TTreeReaderValue<float> rv_b_1_mass(reader, "m_b1");
+    TTreeReaderValue<float> rv_b_1_pT(reader, "b1_pt");
+    TTreeReaderValue<float> rv_b_1_eta(reader, "b1_eta");
+    TTreeReaderValue<float> rv_b_1_phi(reader, "b1_phi");
+    TTreeReaderValue<float> rv_b_1_mass(reader, "b1_m");
+    TTreeReaderValue<float> rv_b_1_hhbtag(reader, "b1_HHbtag");
+    TTreeReaderValue<float> rv_b_1_cvsl(reader, "b1_DeepFlavour_CvsL");
+    TTreeReaderValue<float> rv_b_1_cvsb(reader, "b1_DeepFlavour_CvsB");
+    float b_1_hhbtag, b_1_cvsl, b_1_cvsb;
     LorentzVectorPEP pep_b_1;
     LorentzVector b_1;
 
     // b2 feats
-    TTreeReaderValue<float> rv_b_2_pT(reader, "pt_b2");
-    TTreeReaderValue<float> rv_b_2_eta(reader, "eta_b2");
-    TTreeReaderValue<float> rv_b_2_phi(reader, "phi_b2");
-    TTreeReaderValue<float> rv_b_2_mass(reader, "m_b2");
+    TTreeReaderValue<float> rv_b_2_pT(reader, "b2_pt");
+    TTreeReaderValue<float> rv_b_2_eta(reader, "b2_eta");
+    TTreeReaderValue<float> rv_b_2_phi(reader, "b2_phi");
+    TTreeReaderValue<float> rv_b_2_mass(reader, "b2_m");
+    TTreeReaderValue<float> rv_b_2_hhbtag(reader, "b2_HHbtag");
+    TTreeReaderValue<float> rv_b_2_cvsl(reader, "b2_DeepFlavour_CvsL");
+    TTreeReaderValue<float> rv_b_2_cvsb(reader, "b2_DeepFlavour_CvsB");
+    float b_2_hhbtag, b_2_cvsl, b_2_cvsb;
     LorentzVectorPEP pep_b_2;
     LorentzVector b_2;
 
     // vbf1 feats
-    TTreeReaderValue<float> rv_vbf_1_pT(reader, "pt_VBF_1");
-    TTreeReaderValue<float> rv_vbf_1_eta(reader, "eta_VBF_1");
-    TTreeReaderValue<float> rv_vbf_1_phi(reader, "phi_VBF_1");
-    TTreeReaderValue<float> rv_vbf_1_mass(reader, "m_VBF_1");
+    TTreeReaderValue<float> rv_vbf_1_pT(reader, "VBF1_pt");
+    TTreeReaderValue<float> rv_vbf_1_eta(reader, "VBF1_eta");
+    TTreeReaderValue<float> rv_vbf_1_phi(reader, "VBF1_phi");
+    TTreeReaderValue<float> rv_vbf_1_mass(reader, "VBF1_m");
+    TTreeReaderValue<float> rv_vbf_1_hhbtag(reader, "VBF1_HHbtag");
+    TTreeReaderValue<float> rv_vbf_1_cvsl(reader, "VBF1_DeepFlavour_CvsL");
+    TTreeReaderValue<float> rv_vbf_1_cvsb(reader, "VBF1_DeepFlavour_CvsB");
+    float vbf_1_hhbtag, vbf_1_cvsl, vbf_1_cvsb;
     LorentzVectorPEP pep_vbf_1;
     LorentzVector vbf_1;
 
     // vbf2 feats
-    TTreeReaderValue<float> rv_vbf_2_pT(reader, "pt_VBF_2");
-    TTreeReaderValue<float> rv_vbf_2_eta(reader, "eta_VBF_2");
-    TTreeReaderValue<float> rv_vbf_2_phi(reader, "phi_VBF_2");
-    TTreeReaderValue<float> rv_vbf_2_mass(reader, "m_VBF_2");
+    TTreeReaderValue<float> rv_vbf_2_pT(reader, "VBF2_pt");
+    TTreeReaderValue<float> rv_vbf_2_eta(reader, "VBF2_eta");
+    TTreeReaderValue<float> rv_vbf_2_phi(reader, "VBF2_phi");
+    TTreeReaderValue<float> rv_vbf_2_mass(reader, "VBF2_m");
+    TTreeReaderValue<float> rv_vbf_2_hhbtag(reader, "VBF2_HHbtag");
+    TTreeReaderValue<float> rv_vbf_2_cvsl(reader, "VBF2_DeepFlavour_CvsL");
+    TTreeReaderValue<float> rv_vbf_2_cvsb(reader, "VBF2_DeepFlavour_CvsB");
+    float vbf_2_hhbtag, vbf_2_cvsl, vbf_2_cvsb;
     LorentzVectorPEP pep_vbf_2;
     LorentzVector vbf_2;
 
@@ -393,19 +384,22 @@ bool run_test_loop(std::string fname, InfWrapper wrapper, const int& n, const st
         kinfit_mass   = *rv_kinfit_mass;
         kinfit_chi2   = *rv_kinfit_chi2;
         mt2           = *rv_mt2;
-        mt_tot        = *rv_mt_tot;
-        top_1_mass    = *rv_top_1_mass;
-        top_2_mass    = *rv_top_2_mass;
-        p_zetavisible = *rv_p_zetavisible;
-        p_zeta        = *rv_p_zeta;
-        l_1_mt        = *rv_l_1_mt;
-        l_2_mt        = *rv_l_2_mt;
+        b_1_hhbtag    = *rv_b_1_hhbtag;
+        b_2_hhbtag    = *rv_b_2_hhbtag;
+        vbf_1_hhbtag  = *rv_vbf_1_hhbtag;
+        vbf_2_hhbtag  = *rv_vbf_2_hhbtag;
+        b_1_cvsl      = *rv_b_1_cvsl;
+        b_2_cvsl      = *rv_b_2_cvsl;
+        vbf_1_cvsl    = *rv_vbf_1_cvsl;
+        vbf_2_cvsl    = *rv_vbf_2_cvsl;
+        b_1_cvsb      = *rv_b_1_cvsb;
+        b_2_cvsb      = *rv_b_2_cvsb;
+        vbf_1_cvsb    = *rv_vbf_1_cvsb;
+        vbf_2_cvsb    = *rv_vbf_2_cvsb;
 
         // Load tagging
         b_1_csv     = *rv_b_1_csv;
         b_2_csv     = *rv_b_2_csv;
-        b_1_deepcsv = *rv_b_1_deepcsv;
-        b_2_deepcsv = *rv_b_2_deepcsv;
 
         // Load vectors
         pep_svfit.SetCoordinates(*rv_svfit_pT, *rv_svfit_eta, *rv_svfit_phi, *rv_svfit_mass);
@@ -444,9 +438,9 @@ bool run_test_loop(std::string fname, InfWrapper wrapper, const int& n, const st
         svfit_conv     = *rv_svfit_mass > 0;
         hh_kinfit_conv = kinfit_chi2    > 0;
 
-        feat_vals = evt_proc.process_as_vec(b_1, b_2, l_1, l_2, met, svfit, vbf_1, vbf_2, kinfit_mass, kinfit_chi2, mt2, mt_tot, p_zetavisible, p_zeta,
-                                            top_1_mass, top_2_mass, l_1_mt, l_2_mt, is_boosted, b_1_csv, b_2_csv, b_1_deepcsv, b_2_deepcsv, e_channel, e_year,
-                                            res_mass, spin, klambda, n_vbf, svfit_conv, hh_kinfit_conv);
+        feat_vals = evt_proc.process_as_vec(b_1, b_2, l_1, l_2, met, svfit, vbf_1, vbf_2, kinfit_mass, kinfit_chi2, mt2, is_boosted, b_1_csv, b_2_csv,
+                                            e_channel, e_year, res_mass, spin, klambda, n_vbf, svfit_conv, hh_kinfit_conv, b_1_hhbtag, b_2_hhbtag, vbf_1_hhbtag,
+                                            vbf_2_hhbtag, b_1_cvsl, b_2_cvsl, vbf_1_cvsl, vbf_2_cvsl, b_1_cvsb, b_2_cvsb, vbf_1_cvsb, vbf_2_cvsb, 0, 0, 0);
 
         std::cout << "Input features:\n";
         for (unsigned int i=0; i < requested.size(); i++) std::cout << requested[i] << "\t:\t" << feat_vals[i] << "\n";
