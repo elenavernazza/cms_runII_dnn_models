@@ -469,8 +469,8 @@ std::map<std::string, std::string> get_options(int argc, char* argv[]) {
 
     std::map<std::string, std::string> options;
     options.insert(std::make_pair("-n", "1")); // number of events
-    options.insert(std::make_pair("-m", "2020-03-11-0")); // moddel version
-    options.insert(std::make_pair("-d", "2020-02-14")); // moddel version
+    options.insert(std::make_pair("-m", "2020-05-18-2")); // model version
+    options.insert(std::make_pair("-d", "2020-05-11-mva")); // model version
 
     if (argc >= 2) { //Check if help was requested
         std::string option(argv[1]);
@@ -503,7 +503,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Wrapper instantiated\n";
 
     std::cout << "\nBeginning test loop for ensemble\n";
-    assert(run_test_loop(data_dir+options["-d"]+"/2018_muTau.root", wrapper, std::stoi(options["-n"]), model_dir+options["-m"]+"/features.txt"));
+    assert(run_test_loop(data_dir+options["-d"]+"/2018_muTau_tuple.root", wrapper, std::stoi(options["-n"]), model_dir+options["-m"]+"/features.txt"));
     std::cout << "\nAll tests completed sucessfully\n";
     return 0;
 }
