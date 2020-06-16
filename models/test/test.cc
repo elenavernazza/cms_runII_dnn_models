@@ -430,7 +430,7 @@ bool run_test_loop(std::string fname, InfWrapper wrapper, const int& n, const st
 
         // VBF
         n_vbf = 0;
-        if (jet_cat == 4) {
+        if ((jet_cat == 5) || (jet_cat == 6) || (jet_cat == 7)) {
             if (*rv_vbf_1_mass != std::numeric_limits<float>::lowest()) n_vbf++;
             if (*rv_vbf_2_mass != std::numeric_limits<float>::lowest()) n_vbf++;
         }
