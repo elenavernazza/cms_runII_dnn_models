@@ -22,7 +22,7 @@ Repo for models used in CMS Run II hh->bbtautau search
 |Setting 2|129|53|169|145|
 
 ## Boosted window
- 80, 152, 90, 160
+
 |Mass cut|m_tt min.|m_tt max|m_bb min.|m_bb max.|
 |---|---|---|---|---|
 |Default|80|152|90|160|
