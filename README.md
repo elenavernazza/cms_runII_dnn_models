@@ -2,7 +2,9 @@
 
 Repo for models used in CMS Run II hh->bbtautau search
 
-# Models
+# Non-res GluGlu
+
+## Models
 
 |Model Name|Jet Ordering|Mass Cut|Interface Verision|
 |---|---|---|---|
@@ -11,9 +13,9 @@ Repo for models used in CMS Run II hh->bbtautau search
 |`2020-06-30-0`|HHBTag|Default|V3.0 or V4.0|
 |`2020-06-30-1`|HHBTag|Setting 2|V4.0|
 
-# Mass Cuts
+## Mass Cuts
 
-## Non-boosted
+### Non-boosted
 
 |Mass cut|m_tt offset|m_tt res.|m_bb offset|m_bb res.|
 |---|---|---|---|---|
@@ -21,13 +23,13 @@ Repo for models used in CMS Run II hh->bbtautau search
 |Setting 1|127|50|188|193|
 |Setting 2|129|53|169|145|
 
-## Boosted window
+### Boosted window
 
 |Mass cut|m_tt min.|m_tt max|m_bb min.|m_bb max.|
 |---|---|---|---|---|
 |Default|80|152|90|160|
 
-## Boosted ellipse
+### Boosted ellipse
 
 |Mass cut|m_tt offset|m_tt res.|m_bb offset|m_bb res.|
 |---|---|---|---|---|
