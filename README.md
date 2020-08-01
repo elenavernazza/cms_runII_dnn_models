@@ -6,12 +6,13 @@ Repo for models used in CMS Run II hh->bbtautau search
 
 ## Models
 
-|Model Name|Jet Ordering|Mass Cut|Interface Verision|
+|Model Name|Jet Ordering|Mass Cut|Interface Version|
 |---|---|---|---|
 |`2020-06-29-0`|DF|Default|V3.0 or V4.0|
 |`2020-06-29-1`|DF|Setting 1|V4.0|
 |`2020-06-30-0`|HHBTag|Default|V3.0 or V4.0|
 |`2020-06-30-1`|HHBTag|Setting 2|V4.0|
+|`2020-07-31-0`|HHBTag|Setting 2|V3.0 or V4.0|
 
 ## Mass Cuts
 
