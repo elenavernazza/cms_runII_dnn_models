@@ -2,6 +2,9 @@
 
 Repo for models used in CMS Run II hh->bbtautau search
 
+[Computation interface](https://github.com/GilesStrong/cms_hh_proc_interface)
+[Model interface](https://github.com/GilesStrong/cms_hh_tf_inference)
+
 # Non-res GluGlu
 
 |Model Name|Jet Ordering|Mass Cut|Interface Version|
@@ -11,6 +14,20 @@ Repo for models used in CMS Run II hh->bbtautau search
 |`2020-06-30-0`|HHBTag|Default|V3.0 or V4.0|
 |`2020-06-30-1`|HHBTag|Setting 2|V4.0|
 |`2020-07-31-0`|HHBTag|Setting 2|V3.0 or V4.0|
+
+# ARC checks
+
+## zz_bbtt
+
+|Model Name|Jet Ordering|Mass Cut|Interface Version|
+|---|---|---|---|
+|`2021-11-22-0`|HHBTag|Setting ZZ|V3.0 or V4.0|
+
+## zh_bbtt
+
+|Model Name|Jet Ordering|Mass Cut|Interface Version|
+|---|---|---|---|
+|`2021-11-22-0`|HHBTag|Setting ZH|V3.0 or V4.0|
 
 # Res GluGlu
 
@@ -28,6 +45,8 @@ Repo for models used in CMS Run II hh->bbtautau search
 |Default|116|35|111|45|
 |Setting 1|127|50|188|193|
 |Setting 2|129|53|169|145|
+|Setting ZZ|115|182|105|280|
+|Setting ZH|140|147|80|228|
 
 ### Boosted window
 
@@ -41,3 +60,5 @@ Repo for models used in CMS Run II hh->bbtautau search
 |---|---|---|---|---|
 |Setting 1|126|81|181|110|
 |Setting 2|128|60|159|94|
+|Setting ZZ|97|96|48|33|
+|Setting ZZ|112|181|84|115|
