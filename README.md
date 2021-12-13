@@ -2,8 +2,10 @@
 
 Repo for models used in CMS Run II hh->bbtautau search
 
-[Computation interface](https://github.com/GilesStrong/cms_hh_proc_interface)
-[Model interface](https://github.com/GilesStrong/cms_hh_tf_inference)
+For use with:
+
+- Computation interface: [cms_hh_proc_interface](https://github.com/GilesStrong/cms_hh_proc_interface)
+- Model interface: [cms_hh_tf_inference](https://github.com/GilesStrong/cms_hh_tf_inference)
 
 # Non-res GluGlu
 
@@ -61,4 +63,4 @@ Repo for models used in CMS Run II hh->bbtautau search
 |Setting 1|126|81|181|110|
 |Setting 2|128|60|159|94|
 |Setting ZZ|97|96|48|33|
-|Setting ZZ|112|181|84|115|
+|Setting ZH|112|181|84|115|
