@@ -1,4 +1,4 @@
-mass
+res_mass
 hh_kinfit_chi2
 hh_kinfit_m
 sv_mass
